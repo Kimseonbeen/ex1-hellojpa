@@ -8,7 +8,7 @@ import javax.persistence.Table;
 /**
  * @Entity 사용 시
  * JPA가 관리
- * @Entity(name = defalut = class name
+ * @Entity(name = defalut = class name aa
  */
 @Entity     // jpa를 사용확인
 public class Member {
