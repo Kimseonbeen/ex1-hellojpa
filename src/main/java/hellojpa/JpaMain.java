@@ -13,6 +13,20 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Member member1 = new Member();
+            member1.setUsername("A");
+
+            Member member2 = new Member();
+            member2.setUsername("B");
+
+            Member member3 = new Member();
+            member3.setUsername("C");
+
+            System.out.println("===============");
+            em.persist(member1);    //1, 51
+            em.persist(member2);  //MEM
+            em.persist(member3);  //MEM
+            System.out.println("===============");
 
             /**
              * 자바 컬렉션에 객체를 가져온것과 같이
@@ -26,9 +40,9 @@ public class JpaMain {
             /**
              * 수정
              * 데이터를 찾아온 다음에 데이터를 변경 끝.
+             * Member member = new Member(200L, "member200");
+             * em.persist(member);
              */
-            Member member = new Member(200L, "member200");
-            em.persist(member);
 
             /**
              * 준영속상태

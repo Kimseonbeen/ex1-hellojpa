@@ -1,30 +1,27 @@
 package hellojpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @Entity 사용 시
  * JPA가 관리
- * @Entity(name = defalut = class name aa
+ * @Entity(name = default = class name
  */
 @Entity     // jpa를 사용확인
+@SequenceGenerator(
+        name = "MEMBER_SEQ_GENERATOR",
+        sequenceName = "member_seq",
+        initialValue = 1, allocationSize = 50)
 public class Member {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MEMBER_SEQ_GENERATOR")
     private Long id;
 
-    @Column(unique = true, length = 10)
-    private String name;
+    @Column(name = "name", nullable = false)    // nullable -> not null 제약조건
+    private String username;
 
     public Member() {}
-
-    public Member(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public Long getId() {
         return id;
@@ -34,11 +31,11 @@ public class Member {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
