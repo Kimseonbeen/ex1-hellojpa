@@ -13,20 +13,42 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member member1 = new Member();
-            member1.setUsername("A");
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
 
-            Member member2 = new Member();
-            member2.setUsername("B");
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setTeam(team);
+            em.persist(member);
 
-            Member member3 = new Member();
-            member3.setUsername("C");
+            em.flush();
+            em.clear();
 
-            System.out.println("===============");
-            em.persist(member1);    //1, 51
-            em.persist(member2);  //MEM
-            em.persist(member3);  //MEM
-            System.out.println("===============");
+            Member findMember = em.find(Member.class, member.getId());
+
+            Team findTeam = findMember.getTeam();
+            System.out.println("findTeam.getName() = " + findTeam.getName());
+
+
+            /**
+             *
+             * Member member1 = new Member();
+             *             member1.setUsername("A");
+             *
+             *             Member member2 = new Member();
+             *             member2.setUsername("B");
+             *
+             *             Member member3 = new Member();
+             *             member3.setUsername("C");
+             *
+             *             System.out.println("===============");
+             *             em.persist(member1);    //1, 51
+             *             em.persist(member2);  //MEM
+             *             em.persist(member3);  //MEM
+             *             System.out.println("===============");
+             */
+
 
             /**
              * 자바 컬렉션에 객체를 가져온것과 같이
@@ -65,8 +87,8 @@ public class JpaMain {
              * 영속성 컨텍스트를 비우지 않음
              * 영속성 컨텍스트의 변경내용을 데이터베이스에 동기화
              * 트랜잭션이라는 작업 단위가 중요 ! -> 커밋 직전에만 동기화 하면 됨
+             * em.flush();
              */
-            em.flush();
 
             // 중간에 JPQL 실행
             /**
@@ -84,8 +106,6 @@ public class JpaMain {
              */
 
             // em.update(member)    이런 코드가 있어야 하지 않을까.. ? / 없어도 된다.
-
-            System.out.println("=================================");
 
 
             // 객체를 저장한 상태 (영속)
