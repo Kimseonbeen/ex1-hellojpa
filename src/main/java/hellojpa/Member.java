@@ -33,10 +33,6 @@ public class Member {
         return team;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
     public Member() {}
 
     public Long getId() {
@@ -53,5 +49,9 @@ public class Member {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }

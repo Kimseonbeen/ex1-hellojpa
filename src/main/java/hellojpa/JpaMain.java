@@ -13,23 +13,43 @@ public class JpaMain {
         tx.begin();
 
         try {
+
             Team team = new Team();
             team.setName("TeamA");
+            // team.getMembers().add(member);   주인이 아닌 경우 읽기만 가능하므로 add 하더라도 추가가 되지 않는다.
             em.persist(team);
 
             Member member = new Member();
             member.setUsername("member1");
-            member.setTeam(team);
+            
+            // 연관관계 편의 메서드
+            team.addMember(member);
             em.persist(member);
 
-            em.flush();
-            em.clear();
+//            member.changeTeam(team);   //**
 
-            Member findMember = em.find(Member.class, member.getId());
+            /**
+             *  순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하자
+             *  team.getMembers().add(member);  //** 이 부분을 set 메서드에 추가 하면 
+             *  setTeam으로 둘다 설정이 됨
+             */
+            /**
+             * em.flush();
+             * em.clear(); 를 하게되면 영속성 컨텍스트를 비우기 때문에
+             * 다시 DB에서 조회해온다.
+             * 그래서 tem.getId()의 값도 알수 있고, select 쿼리가 조회된다.
+             */
+//            em.flush();
+//            em.clear();
 
-            Team findTeam = findMember.getTeam();
-            System.out.println("findTeam.getName() = " + findTeam.getName());
+            Team findTeam = em.find(Team.class, team.getId());  //1차 캐시
+            List<Member> members = findTeam.getMembers();
 
+            System.out.println("================");
+            for (Member m : members) {
+                System.out.println("m = " + m.getUsername());
+            }
+            System.out.println("================");
 
             /**
              *
