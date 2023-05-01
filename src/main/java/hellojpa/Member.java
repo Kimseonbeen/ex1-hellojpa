@@ -1,6 +1,8 @@
 package hellojpa;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Entity 사용 시
@@ -27,7 +29,15 @@ public class Member {
 
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
+    // @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) -> 일대다 양방향 설정 시 맵핑은 되어있으나, insert, update를 막는다. 읽기전용
     private Team team;
+
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberProduct> memberProducts = new ArrayList<>();
 
     public Team getTeam() {
         return team;

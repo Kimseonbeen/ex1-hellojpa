@@ -14,19 +14,38 @@ public class JpaMain {
 
         try {
 
-            Team team = new Team();
-            team.setName("TeamA");
-            // team.getMembers().add(member);   주인이 아닌 경우 읽기만 가능하므로 add 하더라도 추가가 되지 않는다.
-            em.persist(team);
+            Movie movie = new Movie();
+            movie.setDirector("A");
+            movie.setActor("BB");
+            movie.setName("바사");
+            movie.setPrice(10000);
 
-            Member member = new Member();
-            member.setUsername("member1");
-            
-            // 연관관계 편의 메서드
-            team.addMember(member);
-            em.persist(member);
+            em.persist(movie);
 
-//            member.changeTeam(team);   //**
+            em.flush();
+            em.clear();
+
+            // inner join item, movie를 해서 결과를 가져온다.
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);
+
+
+            /**
+             *             Team team = new Team();
+             *             team.setName("TeamA");
+             *             // team.getMembers().add(member);   주인이 아닌 경우 읽기만 가능하므로 add 하더라도 추가가 되지 않는다.
+             *             em.persist(team);
+             *
+             *             Member member = new Member();
+             *             member.setUsername("member1");
+             *
+             *             // 연관관계 편의 메서드
+             *             team.addMember(member);
+             *             em.persist(member);
+             *
+             * //            member.changeTeam(team);   //**
+             */
+
 
             /**
              *  순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하자
@@ -42,14 +61,14 @@ public class JpaMain {
 //            em.flush();
 //            em.clear();
 
-            Team findTeam = em.find(Team.class, team.getId());  //1차 캐시
+ /*           Team findTeam = em.find(Team.class, team.getId());  //1차 캐시
             List<Member> members = findTeam.getMembers();
 
             System.out.println("================");
             for (Member m : members) {
                 System.out.println("m = " + m.getUsername());
             }
-            System.out.println("================");
+            System.out.println("================");*/
 
             /**
              *
