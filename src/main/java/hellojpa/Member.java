@@ -65,4 +65,12 @@ public class Member extends BaseEntity {
     public void setTeam(Team team) {
         this.team = team;
     }
+
+    public Locker getLocker() {
+        return locker;
+    }
+
+    public List<MemberProduct> getMemberProducts() {
+        return memberProducts;
+    }
 }

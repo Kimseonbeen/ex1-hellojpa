@@ -1,5 +1,7 @@
 package hellojpa;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,13 +17,68 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setUsername("user1");
-            member.setCreatedBy("kim");
-            member.setCreatedDate(LocalDateTime.now());
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            em.persist(member1);
+
+            em.flush();
+            em.clear();
+
+            /**
+             * em.find 인해 영속성 컨텍스트 안에 Member가 들어감
+             * 그 이후 getReference 사용한다고 하더라도 프록시 객체를 반환하지 않음
+             * 영속성 컨텍스트 안에 이미 존재하는데 굳이 프록시 객체를 반환할 이유가 없음
+             * 성능상 이점이 없기 때문이다.
+             *
+             *             Member m1 = em.find(Member.class, member1.getId());
+             *             System.out.println("m1.getClass() = " + m1.getClass());
+             *
+             *             Member reference = em.getReference(Member.class, member1.getId());
+             *             System.out.println("reference.getClass() = " + reference.getClass());
+             */
+
+            Member refMember = em.getReference(Member.class, member1.getId());
+            System.out.println("m1.getClass() = " + refMember.getClass());  //Proxy
+
+            Member findMember = em.find(Member.class, member1.getId());
+            System.out.println("reference.getClass() = " + findMember.getClass());  //Member
+
+            // 하나의 트랜젝션 안에서는 == 비교는 JPA에서 무조건 true가 반환이 되어야 한다.!
+            System.out.println("a == b : " + (refMember == findMember));    //true !
+            
+            // 프록시 인스턴스의 초기화 여부 확인
+            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+            // 강제초기화
+            Hibernate.initialize(refMember);
 
 
-            em.persist(member);
+
+            //
+//            Member findMember = em.find(Member.class, member.getId());
+            /**
+             * ? select query 안나감
+             * getReference 호출 시점에는 데이터베이스 조회를 하지 않음
+             * 그런데, 이 값이 실제 사용되는 시점 밑에 sout에서 findMember.getUsername() 호출하는 시점에
+             * JPA가 데이터베이스 조회를 실행하여 값을 채운다..
+             * 
+             * getReference() : 데이터베이스 조회를 미루는 가짜(프록시) 엔티티 객체 조회
+             *
+             * Member findMember = em.getReference(Member.class, member.getId());
+             *             System.out.println("findMember = " + findMember.getClass());    // class hellojpa.Member$HibernateProxy$dPaHCZfb : 프록시 클래스
+             *             System.out.println("findMember.getId() = " + findMember.getId());
+             * getUsername 가져오는 시점에 실제 타겟에 대한 값을 알게된다.
+             * System.out.println("findMember.getUsername() = " + findMember.getUsername());
+             *
+             */
+
+//            Member member = em.find(Member.class, 1L);
+//
+//            printMember(member);
+//
+//            printMemberAndTeam(member);
+
+
+            // em.persist(member);
 
             /**
              *             Team team = new Team();
@@ -168,6 +225,25 @@ public class JpaMain {
         }
 
         emf.close();
+
+
+    }
+
+    private static void logic(Member m1, Member m2) {
+        System.out.println("m1 == m2 : " + (m1 instanceof Member));
+        System.out.println("m1 == m2 : " + (m2 instanceof Member));
+    }
+
+    private static void printMember(Member member) {
+        System.out.println("member.getUsername() = " + member.getUsername());
+    }
+
+    private static void printMemberAndTeam(Member member) {
+        String username = member.getUsername();
+        System.out.println("username = " + username);
+
+        Team team = member.getTeam();
+        System.out.println("team = " + team.getName());
 
 
     }
