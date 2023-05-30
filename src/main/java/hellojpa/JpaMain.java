@@ -16,13 +16,14 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Child child1 = new Child();
+            Child child2 = new Child();
 
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            em.persist(member1);
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
 
-            em.flush();
-            em.clear();
+            em.persist(parent);
 
             /**
              * em.find 인해 영속성 컨텍스트 안에 Member가 들어감
@@ -37,21 +38,22 @@ public class JpaMain {
              *             System.out.println("reference.getClass() = " + reference.getClass());
              */
 
-            Member refMember = em.getReference(Member.class, member1.getId());
-            System.out.println("m1.getClass() = " + refMember.getClass());  //Proxy
-
-            Member findMember = em.find(Member.class, member1.getId());
-            System.out.println("reference.getClass() = " + findMember.getClass());  //Member
-
-            // 하나의 트랜젝션 안에서는 == 비교는 JPA에서 무조건 true가 반환이 되어야 한다.!
-            System.out.println("a == b : " + (refMember == findMember));    //true !
-            
-            // 프록시 인스턴스의 초기화 여부 확인
-            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
-            // 강제초기화
-            Hibernate.initialize(refMember);
-
-
+            /**
+             *             Member refMember = em.getReference(Member.class, member1.getId());
+             *             System.out.println("m1.getClass() = " + refMember.getClass());  //Proxy
+             *
+             *             Member findMember = em.find(Member.class, member1.getId());
+             *             System.out.println("reference.getClass() = " + findMember.getClass());  //Member
+             *
+             *             // 하나의 트랜젝션 안에서는 == 비교는 JPA에서 무조건 true가 반환이 되어야 한다.!
+             *             System.out.println("a == b : " + (refMember == findMember));    //true !
+             *
+             *             // 프록시 인스턴스의 초기화 여부 확인
+             *             System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+             *             // 강제초기화
+             *             Hibernate.initialize(refMember);
+             *
+             */
 
             //
 //            Member findMember = em.find(Member.class, member.getId());

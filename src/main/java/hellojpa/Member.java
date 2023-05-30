@@ -22,13 +22,13 @@ public class Member extends BaseEntity {
     @Column(name = "MEMBER_ID")
     private Long id;
 
-    @Column(name = "name", nullable = false)    // nullable -> not null 제약조건
+    @Column(name = "USERNAME")    // nullable -> not null 제약조건
     private String username;
 
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
     // @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) -> 일대다 양방향 설정 시 맵핑은 되어있으나, insert, update를 막는다. 읽기전용
     private Team team;
