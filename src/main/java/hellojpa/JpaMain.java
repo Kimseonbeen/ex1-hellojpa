@@ -16,14 +16,21 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Child child1 = new Child();
-            Child child2 = new Child();
 
-            Parent parent = new Parent();
-            parent.addChild(child1);
-            parent.addChild(child2);
+            Address address = new Address("city", "street", "10000");
 
-            em.persist(parent);
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(address);
+            em.persist(member);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setHomeAddress(address);
+            em.persist(member2);
+
+            member.getHomeAddress().setCity("newCity");
+
 
             /**
              * em.find 인해 영속성 컨텍스트 안에 Member가 들어감

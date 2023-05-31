@@ -73,4 +73,28 @@ public class Member extends BaseEntity {
     public List<MemberProduct> getMemberProducts() {
         return memberProducts;
     }
+
+    // 임베디드 타입
+    @Embedded
+    private Period workPeriod;
+
+    // 주소
+    @Embedded
+    private Address homeAddress;
+
+    public Period getWorkPeriod() {
+        return workPeriod;
+    }
+
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
 }
